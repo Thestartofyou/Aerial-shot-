@@ -1,0 +1,30 @@
+import cv2
+import numpy as np
+import matplotlib.pyplot as plt
+
+# Load the aerial image of the building
+image = cv2.imread("roof_image.jpg")
+
+# Convert the image to grayscale for processing
+gray_image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+
+# Use edge detection to outline the roof (Canny edge detector)
+edges = cv2.Canny(gray_image, 50, 150)
+
+# Use contour detection to find the roof's boundary
+contours, _ = cv2.findContours(edges, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+
+# Assume the largest contour is the roof
+roof_contour = max(contours, key=cv2.contourArea)
+
+# Calculate the roof area in pixels
+roof_area_pixels = cv2.contourArea(roof_contour)
+print(f"Roof area in pixels: {roof_area_pixels}")
+
+# Draw the contour on the original image
+cv2.drawContours(image, [roof_contour], -1, (0, 255, 0), 2)
+
+# Display the result
+plt.imshow(cv2.cvtColor(image, cv2.COLOR_BGR2RGB))
+plt.title("Roof Outline")
+plt.show()
